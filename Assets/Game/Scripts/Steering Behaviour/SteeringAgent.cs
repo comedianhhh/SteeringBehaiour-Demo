@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SteeringAgent : MonoBehaviour
@@ -12,6 +13,13 @@ public class SteeringAgent : MonoBehaviour
     };
 
     public SummingMethod summingMethod = SummingMethod.WeightedAverage;
+
+    public bool useRootMotion = true;
+    public bool useGravity = true;
+
+    private Animator animator;
+    private CharacterController characterController;
+
 
     public float mass = 1.0f;
     public float maxSpeed = 1.0f;
@@ -27,6 +35,12 @@ public class SteeringAgent : MonoBehaviour
 
     void Start()
     {
+        animator=GetComponent<Animator>();
+        if(animator==null)
+        {
+            useRootMotion=false;
+        }
+        characterController = GetComponent<CharacterController>();
         steeringBehaviours.AddRange(GetComponentsInChildren<SteeringBehaviourBase>());
         foreach(SteeringBehaviourBase behaviour in steeringBehaviours)
         {
@@ -41,20 +55,43 @@ public class SteeringAgent : MonoBehaviour
 
         Vector3 steeringForce=CalculateSteeringForce();
 
-        Vector3 accerleration = steeringForce / mass;
-
-        velocity = velocity + (accerleration * Time.deltaTime);
-
-        velocity = Vector3.ClampMagnitude(velocity,maxSpeed);
-
-        transform.position += (velocity * Time.deltaTime);
-
-        if (reachedGoal == true)
+        if(reachedGoal==true)
         {
             velocity = Vector3.zero;
+            if(animator!=null)
+                animator.SetFloat("Speed",0);
         }
         else
         {
+            Vector3 accerleration = steeringForce / mass;
+
+            velocity = velocity + (accerleration * Time.deltaTime);
+
+            velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
+
+            float speed=velocity.magnitude;
+            if(animator!=null)
+            {
+                animator.SetFloat("Speed", speed);
+            }
+
+            if(useRootMotion==false)
+            {
+                if(characterController!=null)
+                {
+                    characterController.Move(velocity * Time.deltaTime);
+                }
+                else
+                {
+                    transform.position += (velocity * Time.deltaTime);
+                }
+
+                if(useGravity==true)
+                {
+                    characterController.Move(Physics.gravity * Time.deltaTime);
+                }
+            }
+
             if (velocity.magnitude > 0.0f)
             {
                 velocity.y = 0;
@@ -125,5 +162,26 @@ public class SteeringAgent : MonoBehaviour
         }
 
         return true;
+    }
+
+    private void OnAnimatorMove()
+    {
+        if (Time.deltaTime != 0.0f && useRootMotion == true)
+        {
+            Vector3 animatonVelocity = animator.deltaPosition / Time.deltaTime;
+            if(characterController!=null)
+            {
+                characterController.Move((transform.forward* animatonVelocity.magnitude)* Time.deltaTime);
+            }
+            else
+            {
+                transform.position+=(transform.forward* animatonVelocity.magnitude)* Time.deltaTime;
+            }
+
+            if(useGravity==true)
+            {
+                characterController.Move(Physics.gravity * Time.deltaTime);
+            }
+        }
     }
 }
