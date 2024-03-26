@@ -44,7 +44,7 @@ public class ObstacleAvoidSteeringBehaviour : SteeringBehaviourBase
         foreach(Feeler feeler in feelers)
         {
             Vector3 feelerPosition = transform.localRotation*feeler.offset + transform.position;
-            Debug.DrawRay(feelerPosition, transform.forward * feeler.distance+feelerPosition, Color.blue);
+            Debug.DrawLine(feelerPosition, transform.forward * feeler.distance+feelerPosition, Color.blue);
         }
     }
 }

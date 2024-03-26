@@ -5,31 +5,46 @@ using UnityEngine.AI;
 
 public class FollowPathSteeringBahaviour : ArriveSteeringBehaviour
 {
-    public float waypointDistance = 0.5f;
-    public int currentWaypointIndex = 0;
+    private float waypointDistance = 0.5f;
+    private int currentWaypointIndex = 0;
     private NavMeshPath path;
 
+    public int currentPointsIndex = 0;
+    public List<Transform>points;
+    public float pathPointDistance = 1.0f;
+ 
+    
     private void Start()
     {
         path=new NavMeshPath();
+
     }
     public override Vector3 CalculateForce()
     {
-        CheckMouseInput();
+        if (points.Count == 0) return Vector3.zero;
 
-        if(mouseClicked)
+        target =points[currentPointsIndex].position;
+
+        if ((target - transform.position).magnitude< pathPointDistance)
         {
-            currentWaypointIndex = 0;
-            NavMesh.CalculatePath(transform.position, target, NavMesh.AllAreas, path);
-            if (path.corners.Length > 0)
+            currentPointsIndex++;
+            if (currentPointsIndex >= points.Count)
             {
-                target = path.corners[0];
-            }
-            else
-            {
-                target=transform.position;
+                currentPointsIndex = 0;
             }
         }
+
+        currentWaypointIndex = 0;
+        NavMesh.CalculatePath(transform.position, target, NavMesh.AllAreas, path);
+        if (path.corners.Length > 0)
+        {
+            target = path.corners[0];
+        }
+        else
+        {
+            target = transform.position;
+        }
+
 
         if (currentWaypointIndex != path.corners.Length && (target - transform.position).magnitude < waypointDistance)
         {
@@ -46,7 +61,7 @@ public class FollowPathSteeringBahaviour : ArriveSteeringBehaviour
 
     protected override void OnDrawGizmos()
     {
-        base.OnDrawGizmos();
+        //base.OnDrawGizmos();
         DebugExtension.DrawCircle(target, Color.magenta, waypointDistance);
         if (path!=null)
         {

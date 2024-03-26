@@ -45,6 +45,7 @@ public class ArriveSteeringBehaviour : SeekSteeringBehaviour
         base.OnDrawGizmos();
 
         DebugExtension.DebugCircle(target, Vector3.up, Color.red, slowDownDistance);
+
     }
 
 }
