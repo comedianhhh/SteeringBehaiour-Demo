@@ -14,6 +14,8 @@ public class SteeringAgent : MonoBehaviour
 
     public SummingMethod summingMethod = SummingMethod.WeightedAverage;
 
+
+
     public bool useRootMotion = true;
     public bool useGravity = true;
 
@@ -28,12 +30,13 @@ public class SteeringAgent : MonoBehaviour
 
     public Vector3 velocity = Vector3.zero;
 
-    private List<SteeringBehaviourBase> steeringBehaviours = new List<SteeringBehaviourBase>();
+    public List<SteeringBehaviourBase> steeringBehaviours = new List<SteeringBehaviourBase>();
 
     public float angularDampeningTime = 5.0f;
     public float deadZone = 10.0f;
 
     public bool IsBot3;
+    public bool isKeepMoving;
 
     void Start()
     {
@@ -57,18 +60,9 @@ public class SteeringAgent : MonoBehaviour
 
         Vector3 steeringForce=CalculateSteeringForce();
 
-        if(reachedGoal==true)
+        if(reachedGoal==true&& isKeepMoving==false)
         {
             velocity = Vector3.zero;
-            if (IsBot3)
-            {
-                DisableBehavior<ArriveSteeringBehaviour>();
-                EnableBehavior<WanderSteeringBahaviour>();
-                Debug.Log("Target out of range, switching to Wander");
-                reachedGoal = false;
-                return;
-            }
-
             if(animator!=null)
                 animator.SetFloat("Speed",0);
         }
@@ -215,4 +209,8 @@ public class SteeringAgent : MonoBehaviour
             }
         }
     }
+
+
+    
+    
 }

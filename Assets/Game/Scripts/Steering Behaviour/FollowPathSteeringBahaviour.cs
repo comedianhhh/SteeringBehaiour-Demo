@@ -11,7 +11,7 @@ public class FollowPathSteeringBahaviour : ArriveSteeringBehaviour
 
     public int currentPointsIndex = 0;
     public List<Transform>points;
-    public float pathPointDistance = 1.0f;
+    public float pathPointDistance = 2.0f;
 
     public bool useNavMesh = true;
     private void Start()
@@ -22,8 +22,6 @@ public class FollowPathSteeringBahaviour : ArriveSteeringBehaviour
     public override Vector3 CalculateForce()
     {
         if (points.Count == 0) return Vector3.zero;
-
-        // Decide which method to use based on the useNavMesh flag
         return useNavMesh ? CalculateNavMeshForce() : CalculateDirectForce();
     }
 
@@ -36,7 +34,7 @@ public class FollowPathSteeringBahaviour : ArriveSteeringBehaviour
             currentPointsIndex++;
             if (currentPointsIndex >= points.Count)
             {
-                currentPointsIndex = 0; // Optionally reset to loop or handle end of path differently
+                currentPointsIndex = 0;
             }
         }
 
