@@ -7,10 +7,9 @@ public class ArriveSteeringBehaviour : SeekSteeringBehaviour
     public float slowDownDistance = 2.0f;
     public float stoppingDistance = 0.1f;
 
-
     public override Vector3 CalculateForce()
     {
-        CheckMouseInput();
+        //CheckMouseInput();
         return CalculateArriveForce();
     }
 
@@ -36,7 +35,7 @@ public class ArriveSteeringBehaviour : SeekSteeringBehaviour
         }
 
         steeringAgent.reachedGoal = true;
-
+        
         return Vector3.zero;
     }
 

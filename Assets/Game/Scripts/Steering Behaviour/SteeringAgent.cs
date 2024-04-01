@@ -33,6 +33,8 @@ public class SteeringAgent : MonoBehaviour
     public float angularDampeningTime = 5.0f;
     public float deadZone = 10.0f;
 
+    public bool IsBot3;
+
     void Start()
     {
         animator=GetComponent<Animator>();
@@ -58,6 +60,15 @@ public class SteeringAgent : MonoBehaviour
         if(reachedGoal==true)
         {
             velocity = Vector3.zero;
+            if (IsBot3)
+            {
+                DisableBehavior<ArriveSteeringBehaviour>();
+                EnableBehavior<WanderSteeringBahaviour>();
+                Debug.Log("Target out of range, switching to Wander");
+                reachedGoal = false;
+                return;
+            }
+
             if(animator!=null)
                 animator.SetFloat("Speed",0);
         }
@@ -109,8 +120,28 @@ public class SteeringAgent : MonoBehaviour
                 }
             }
         }
+
+
     }
 
+
+    public void EnableBehavior<T>() where T : SteeringBehaviourBase
+    {
+        foreach (var behavior in steeringBehaviours)
+        {
+            if (behavior is T)
+                behavior.enabled = true;
+        }
+    }
+
+    public void DisableBehavior<T>() where T : SteeringBehaviourBase
+    {
+        foreach (var behavior in steeringBehaviours)
+        {
+            if (behavior is T)
+                behavior.enabled = false;
+        }
+    }
     private Vector3 CalculateSteeringForce()
     {
         Vector3 totalForce = Vector3.zero;

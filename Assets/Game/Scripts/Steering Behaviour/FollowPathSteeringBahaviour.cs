@@ -12,8 +12,8 @@ public class FollowPathSteeringBahaviour : ArriveSteeringBehaviour
     public int currentPointsIndex = 0;
     public List<Transform>points;
     public float pathPointDistance = 1.0f;
- 
-    
+
+    public bool useNavMesh = true;
     private void Start()
     {
         path=new NavMeshPath();
@@ -23,9 +23,31 @@ public class FollowPathSteeringBahaviour : ArriveSteeringBehaviour
     {
         if (points.Count == 0) return Vector3.zero;
 
-        target =points[currentPointsIndex].position;
+        // Decide which method to use based on the useNavMesh flag
+        return useNavMesh ? CalculateNavMeshForce() : CalculateDirectForce();
+    }
 
-        if ((target - transform.position).magnitude< pathPointDistance)
+    private Vector3 CalculateDirectForce()
+    {
+        target = points[currentPointsIndex].position;
+
+        if ((target - transform.position).magnitude < pathPointDistance)
+        {
+            currentPointsIndex++;
+            if (currentPointsIndex >= points.Count)
+            {
+                currentPointsIndex = 0; // Optionally reset to loop or handle end of path differently
+            }
+        }
+
+        return CalculateArriveForce();
+    }
+
+    private Vector3 CalculateNavMeshForce()
+    {
+        target = points[currentPointsIndex].position;
+
+        if ((target - transform.position).magnitude < pathPointDistance)
         {
             currentPointsIndex++;
             if (currentPointsIndex >= points.Count)
@@ -54,7 +76,6 @@ public class FollowPathSteeringBahaviour : ArriveSteeringBehaviour
                 target = path.corners[currentWaypointIndex];
             }
         }
-
 
         return CalculateArriveForce();
     }

@@ -16,10 +16,14 @@ public class SeekSteeringBehaviour : SteeringBehaviourBase
     public override Vector3 CalculateForce()
     {
         //CheckMouseInput();
-        if((transform.position-center).magnitude>=RadiusOfCircle)
+        if (steeringAgent.IsBot3&&(transform.position - center).magnitude >= RadiusOfCircle)
         {
             target = RandomPointInCircle(center, RadiusOfCircle);
+            steeringAgent.EnableBehavior<ArriveSteeringBehaviour>();
+            steeringAgent.DisableBehavior<WanderSteeringBahaviour>();
+            Debug.Log("Target out of range, switching to ArriveSteeringBehaviour");
         }
+
         return CalculateSeekForce();
     }
 
