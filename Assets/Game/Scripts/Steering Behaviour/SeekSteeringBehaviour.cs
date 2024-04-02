@@ -18,41 +18,6 @@ public class SeekSteeringBehaviour : SteeringBehaviourBase
         //CheckMouseInput();
         if(steeringAgent.IsBot3)
         {
-            //if ((transform.position - center).magnitude >= RadiusOfCircle)
-            //{
-            //    target = RandomPointInCircle(center, RadiusOfCircle);
-            //    if(steeringAgent.summingMethod ==SteeringAgent.SummingMethod.WeightedAverage)
-            //    {
-            //        foreach( var be in steeringAgent.steeringBehaviours)
-            //        {
-            //            if(be is WanderSteeringBahaviour)
-            //            {
-            //                be.weight = 10.0f;
-            //            }
-            //            else if(be is SeekSteeringBehaviour)
-            //            {
-            //                be.weight =20.0f ;
-            //            }
-            //        }
-            //        steeringAgent.summingMethod=SteeringAgent.SummingMethod.Prioritized;
-            //    }
-            //}
-            //else if(steeringAgent.summingMethod == SteeringAgent.SummingMethod.Prioritized && (transform.position - target).magnitude < 0.3f)
-            //{
-            //    steeringAgent.summingMethod =SteeringAgent.SummingMethod.WeightedAverage;
-
-            //    foreach (var be in steeringAgent.steeringBehaviours)
-            //    {
-            //        if (be is WanderSteeringBahaviour)
-            //        {
-            //            be.weight = 20.0f;
-            //        }
-            //        else if (be is SeekSteeringBehaviour)
-            //        {
-            //            be.weight = 10.0f;
-            //        }
-            //    }
-            //}
             if ((transform.position - center).magnitude >= RadiusOfCircle)
             {
                 target = RandomPointInCircle(center, RadiusOfCircle);
@@ -61,11 +26,11 @@ public class SeekSteeringBehaviour : SteeringBehaviourBase
                 {
                     if (be is WanderSteeringBahaviour)
                     {
-                        be.weight = 1.0f;
+                        be.weight = 0.0f;
                     }
                     else if (be is SeekSteeringBehaviour)
                     {
-                        be.weight = 20.0f;
+                        be.weight = 1.0f;
                     }
                 }
 
@@ -78,11 +43,11 @@ public class SeekSteeringBehaviour : SteeringBehaviourBase
                 {
                     if (be is WanderSteeringBahaviour)
                     {
-                        be.weight = 20.0f;
+                        be.weight = 1.0f;
                     }
                     else if (be is SeekSteeringBehaviour)
                     {
-                        be.weight = 1.0f;
+                        be.weight = 0.0f;
                     }
                 }
             }
